@@ -5,11 +5,11 @@ import java.io.IOException;
 public class Main
 {
 	// Main method
-	public static void main(String[] args)
+	public static void main (String[] args)
 	{
 
 		// Quick Naive Check For Filepath
-		if(args.length == 0)
+		if (args.length == 0)
 		{
 			System.out.println("Please provide a map file.");
 			System.exit(0);

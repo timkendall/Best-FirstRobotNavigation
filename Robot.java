@@ -13,7 +13,7 @@ public class Robot
 	private int totalCost;
 
 	// Custom constructor
-	public Robot(Map _world)
+	public Robot (Map _world)
 	{
 		this.world = _world;
 		this.initial = new State(_world.getStartingX(), _world.getStartingY());
@@ -30,7 +30,7 @@ public class Robot
 
 	}
 
-	public void solve()
+	public void solve ()
 	{
 		do
 		{
@@ -41,7 +41,7 @@ public class Robot
 		// Really should handle if there is no solution
 	}
 
-	private void move()
+	private void move ()
 	{
 		int currentX = this.current.getX();
 		int currentY = this.current.getY();
@@ -53,24 +53,24 @@ public class Robot
 		int yNext;
 
 		// Push all viable states (up to 4) to priority queue
-		for(int i = 0; i < 4; ++i)
+		for (int i = 0; i < 4; ++i)
 		{
 			// Try up, down, left, right
-			if(i == 0)
+			if (i == 0)
 			{
 				//System.out.println("Up");
 				xNext = currentX;
 				yNext = currentY + 1;
 			}
 
-			else if(i == 1)
+			else if (i == 1)
 			{
 				//System.out.println("Down");
 				xNext = currentX;
 				yNext = currentY - 1;
 			}
 
-			else if(i == 2)
+			else if (i == 2)
 			{
 				//System.out.println("Left");
 				xNext = currentX + 1;
@@ -85,14 +85,14 @@ public class Robot
 			}
 
 			// Ignore state if not transversable
-			if(!this.world.isTraversable(xNext, yNext))
+			if (!this.world.isTraversable(xNext, yNext))
 			{
 				//System.out.println("Non-transversable");
 				continue;
 			}
 
 			// Ignore state if visited
-			if(this.world.isVisited(xNext, yNext))
+			if (this.world.isVisited(xNext, yNext))
 			{
 				//System.out.println("xNext: " + xNext);
 				//System.out.println("yNext: " + yNext);
@@ -114,7 +114,7 @@ public class Robot
 
 	}
 
-	public void printSolution()
+	public void printSolution ()
 	{
 		this.world.print();
 		System.out.println("Path Cost: " + this.totalCost);

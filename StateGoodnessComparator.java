@@ -3,7 +3,7 @@ import java.util.Comparator;
 public class StateGoodnessComparator implements Comparator<State>
 {
   @Override
-  public int compare(State _a, State _b)
+  public int compare (State _a, State _b)
   {
     // Check if either state is null
 

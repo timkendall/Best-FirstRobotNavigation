@@ -18,7 +18,7 @@ public class Map
 	private char[][] cells;
 
 	// Custom constructor
-	public Map(String _filepath)
+	public Map (String _filepath)
 	{
 		this.filepath = _filepath;
 
@@ -26,50 +26,50 @@ public class Map
 		this.parseMapFile(this.filepath);
 	}
 
-	public int getDimension()
+	public int getDimension ()
 	{
 		return this.dimension;
 	}
 
-	public int getStartingX()
+	public int getStartingX ()
 	{
 		return this.startingX;
 	}
 
-	public int getStartingY()
+	public int getStartingY ()
 	{
 		return this.startingY;
 	}
 
-	public int getGoalX()
+	public int getGoalX ()
 	{
 		return this.goalX;
 	}
 
-	public int getGoalY()
+	public int getGoalY ()
 	{
 		return this.goalY;
 	}
 
-	public boolean isTraversable(int _x, int _y)
+	public boolean isTraversable (int _x, int _y)
 	{
 		// Check if coordinates are within bounds
-		if(_x < 0 || _x >= this.dimension)
+		if (_x < 0 || _x >= this.dimension)
 			return false;
 
-		if(_y < 0 || _y >= this.dimension)
+		if (_y < 0 || _y >= this.dimension)
 			return false;
 
 		// Check if there is an obstacle
-		if(this.cells[_y][_x] == '+')
+		if (this.cells[_y][_x] == '+')
 			return false;
 
 		return true;
 	}
 
-	public boolean isVisited(int _x, int _y)
+	public boolean isVisited (int _x, int _y)
 	{
-		if(this.cells[_y][_x] == 'o' || this.cells[_y][_x] == 'i')
+		if (this.cells[_y][_x] == 'o' || this.cells[_y][_x] == 'i')
 			return true;
 
 		//System.out.println("(" + _x + "," + _y +") contains:" + this.cells[_y][_x]);
@@ -77,19 +77,19 @@ public class Map
 		return false;
 	}
 
-	public void markVisited(int _x, int _y)
+	public void markVisited (int _x, int _y)
 	{
-		if(this.cells[_y][_x] != 'g')
+		if (this.cells[_y][_x] != 'g')
 			this.cells[_y][_x] = 'o';
 	}
 
-	static String readFile(String _path, Charset _encoding) throws IOException
+	static String readFile (String _path, Charset _encoding) throws IOException
 	{
 	  byte[] encoded = Files.readAllBytes(Paths.get(_path));
 	  return _encoding.decode(ByteBuffer.wrap(encoded)).toString();
 	}
 
-	private void parseMapFile(String _filepath)
+	private void parseMapFile (String _filepath)
 	{
 		/**
 		 * Attempt To Open Map File
@@ -118,7 +118,7 @@ public class Map
 		this.cells = new char[this.dimension][this.dimension];
 
 		// Generate Map Array
-		for(int y = 1; y < rawLines.length; ++y)
+		for (int y = 1; y < rawLines.length; ++y)
 		{
 			for (int x = 0; x < rawLines[y].length(); ++x)
 			{
@@ -127,14 +127,14 @@ public class Map
 				this.cells[y-1][x] = c;
 
 				// Save Position If Xnitial
-				if(c == 'i')
+				if (c == 'i')
 				{
 					this.startingY = y-1;
 					this.startingX = x;
 				}
 
 				// Save Position If Goal
-				if(c == 'g')
+				if (c == 'g')
 				{
 					this.goalY = y-1;
 					this.goalX = x;
@@ -143,9 +143,9 @@ public class Map
 		}
 	}
 
-	public void print()
+	public void print ()
 	{
-		for(int y = 0; y < this.cells.length; ++y)
+		for (int y = 0; y < this.cells.length; ++y)
 		{
 			for (int x = 0; x < this.cells.length; ++x)
 			{
