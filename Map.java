@@ -11,6 +11,10 @@ public class Map
 	// Fields
 	private String filepath;
 	private int dimension;
+	private int startingX;
+	private int startingY;
+	private int goalX;
+	private int goalY;
 	private char[][] cells;
 
 	// Custom constructor
@@ -27,10 +31,62 @@ public class Map
 		return this.dimension;
 	}
 
-	static String readFile(String path, Charset encoding) throws IOException
+	public int getStartingX()
 	{
-	  byte[] encoded = Files.readAllBytes(Paths.get(path));
-	  return encoding.decode(ByteBuffer.wrap(encoded)).toString();
+		return this.startingX;
+	}
+
+	public int getStartingY()
+	{
+		return this.startingY;
+	}
+
+	public int getGoalX()
+	{
+		return this.goalX;
+	}
+
+	public int getGoalY()
+	{
+		return this.goalY;
+	}
+
+	public boolean isTraversable(int _x, int _y)
+	{
+		// Check if coordinates are within bounds
+		if(_x < 0 || _x >= this.dimension)
+			return false;
+
+		if(_y < 0 || _y >= this.dimension)
+			return false;
+
+		// Check if there is an obstacle
+		if(this.cells[_y][_x] == '+')
+			return false;
+
+		return true;
+	}
+
+	public boolean isVisited(int _x, int _y)
+	{
+		if(this.cells[_y][_x] == 'o' || this.cells[_y][_x] == 'i')
+			return true;
+
+		//System.out.println("(" + _x + "," + _y +") contains:" + this.cells[_y][_x]);
+
+		return false;
+	}
+
+	public void markVisited(int _x, int _y)
+	{
+		if(this.cells[_y][_x] != 'g')
+			this.cells[_y][_x] = 'o';
+	}
+
+	static String readFile(String _path, Charset _encoding) throws IOException
+	{
+	  byte[] encoded = Files.readAllBytes(Paths.get(_path));
+	  return _encoding.decode(ByteBuffer.wrap(encoded)).toString();
 	}
 
 	private void parseMapFile(String _filepath)
@@ -57,38 +113,49 @@ public class Map
 		// Split Raw String At Line Breaks
 		String[] rawLines = raw.split(System.getProperty("line.separator"));
 
-		// Get Dimension, Initialize Array
+		// Get Dimension, Xnitialize Array
 		this.dimension = Integer.parseInt(rawLines[0]);
 		this.cells = new char[this.dimension][this.dimension];
 
 		// Generate Map Array
-		for(int i = 1; i < rawLines.length; ++i)
+		for(int y = 1; y < rawLines.length; ++y)
 		{
-			for (int j = 0; j < rawLines[i].length(); ++j)
+			for (int x = 0; x < rawLines[y].length(); ++x)
 			{
-				char c = rawLines[i].charAt(j);
+				char c = rawLines[y].charAt(x);
 				// Assign to Position in Array
-				this.cells[i-1][j] = c;
+				this.cells[y-1][x] = c;
+
+				// Save Position If Xnitial
+				if(c == 'i')
+				{
+					this.startingY = y-1;
+					this.startingX = x;
+				}
+
+				// Save Position If Goal
+				if(c == 'g')
+				{
+					this.goalY = y-1;
+					this.goalX = x;
+				}
 			}
 		}
-	}
-
-	private void generateMap(int _dimension)
-	{
-
 	}
 
 	public void print()
 	{
-		for(int i = 0; i < this.cells.length; ++i)
+		for(int y = 0; y < this.cells.length; ++y)
 		{
-			for (int j = 0; j < this.cells.length; ++j)
+			for (int x = 0; x < this.cells.length; ++x)
 			{
-				System.out.print(this.cells[i][j]);
+				System.out.print(this.cells[y][x]);
 			}
 
 			System.out.println("");
 		}
+
+		System.out.println("");
 	}
 
 }
