@@ -79,7 +79,7 @@ public class Map
 
 	public void markVisited (int _x, int _y)
 	{
-		if (this.cells[_y][_x] != 'g')
+		if (this.cells[_y][_x] != 'g' && this.cells[_y][_x] != this.cells[this.startingY][this.startingX])
 			this.cells[_y][_x] = 'o';
 	}
 
@@ -139,6 +139,18 @@ public class Map
 					this.goalY = y-1;
 					this.goalX = x;
 				}
+			}
+		}
+	}
+
+	public void clean ()
+	{
+		for (int y = 0; y < this.cells.length; ++y)
+		{
+			for (int x = 0; x < this.cells.length; ++x)
+			{
+				if (this.cells[y][x] == 'o')
+					this.cells[y][x] = '.';
 			}
 		}
 	}

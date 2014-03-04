@@ -1,15 +1,17 @@
 import java.util.Comparator;
 import java.util.PriorityQueue;
+import java.util.LinkedList;
 import java.lang.Math;
 
 public class Robot
 {
 	// Fields
 	private Map world;
-	private PriorityQueue<State> frontier;
 	private State initial;
 	private State goal;
 	private State current;
+	private PriorityQueue<State> frontier;
+	private LinkedList<State> solution;
 	private int totalCost;
 
 	// Custom constructor
@@ -21,102 +23,110 @@ public class Robot
 		this.current = new State(_world.getStartingX(), _world.getStartingY());
 		this.totalCost = 0;
 
+		// Setup Solution Queue
+		this.solution = new LinkedList<State>();
+		this.solution.addFirst(this.current);
+
 		// Setup Frontier (Priority) Queue
 		int initialCapacity = 4;
 		Comparator<State> comparator = new StateGoodnessComparator();
-		frontier = new PriorityQueue<State>(initialCapacity, comparator);
-
-		// Setup Solution Queue
-
+		this.frontier = new PriorityQueue<State>(initialCapacity, comparator);
 	}
 
-	public void solve ()
+	public void solve (int _function)
 	{
+
 		do
 		{
-			this.move();
+			this.move(_function);
 			//this.world.print();
 		} while (this.current.equals(this.goal) != true);
 
 		// Really should handle if there is no solution
 	}
 
-	private void move ()
+	private void move (int _function)
 	{
 		int currentX = this.current.getX();
 		int currentY = this.current.getY();
-
-		//System.out.println("currentX: " + currentX);
-		//System.out.println("currentY: " + currentY);
-
 		int xNext;
 		int yNext;
 
-		// Push all viable states (up to 4) to priority queue
+		// Generate Successors
 		for (int i = 0; i < 4; ++i)
 		{
 			// Try up, down, left, right
 			if (i == 0)
 			{
-				//System.out.println("Up");
 				xNext = currentX;
 				yNext = currentY + 1;
-			}
-
-			else if (i == 1)
+			} else if (i == 1)
 			{
-				//System.out.println("Down");
 				xNext = currentX;
 				yNext = currentY - 1;
-			}
-
-			else if (i == 2)
+			} else if (i == 2)
 			{
-				//System.out.println("Left");
 				xNext = currentX + 1;
 				yNext = currentY;
-			}
-
-			else
+			} else
 			{
-				//System.out.println("Right");
 				xNext = currentX - 1;
 				yNext = currentY;
 			}
 
 			// Ignore state if not transversable
-			if (!this.world.isTraversable(xNext, yNext))
-			{
-				//System.out.println("Non-transversable");
-				continue;
-			}
+			if (!this.world.isTraversable(xNext, yNext)) continue;
 
 			// Ignore state if visited
-			if (this.world.isVisited(xNext, yNext))
-			{
-				//System.out.println("xNext: " + xNext);
-				//System.out.println("yNext: " + yNext);
-
-				//System.out.println("Already visited");
-				continue;
-			}
+			if (this.world.isVisited(xNext, yNext)) continue;
 
 			// Otherwise add the state to queue
-			this.frontier.add(new State(xNext, yNext, this.initial, this.goal, this.totalCost));
-			//System.out.println("Length: " + this.frontier.size());
+			this.frontier.add(new State(xNext, yNext, this.initial, this.goal, this.totalCost,  _function));
 		}
 
-		// Pop first state of queue, this is our new state
-		this.current = this.frontier.poll();
-		//this.solution.add(this.currrent);
-		this.world.markVisited(this.current.getX(), this.current.getY());
-		this.totalCost++;
+		// If stuck, go back one
+		if (this.frontier.size() == 0 && !this.current.equals(this.goal))
+		{
+			this.totalCost--;
+			this.current = this.solution.removeFirst();
+			this.world.markVisited(this.current.getX(), this.current.getY());
+		}
+		else
+		{
+			// Pop first state of queue, this is our new state
+			this.current = this.frontier.poll();
+			// Add node to solution stack
+			this.solution.addFirst(this.current);
+			// Mark state as visited
+			this.world.markVisited(this.current.getX(), this.current.getY());
+			this.totalCost++;
+		}
 
+		// Clear frontier queue
+		this.frontier.clear();
 	}
 
 	public void printSolution ()
 	{
-		this.world.print();
+		this.world.clean();
+
+		// Mark our final path
+		for(State state : this.solution)
+		{
+			this.world.markVisited(state.getX(), state.getY());
+		}
+
 		System.out.println("Path Cost: " + this.totalCost);
+		System.out.println("Nodes in Tree: " + this.frontier.size());
+		this.world.print();
+	}
+
+	public void clean ()
+	{
+		this.world.clean();
+		this.frontier.clear();
+		this.solution.clear();
+		this.current = this.initial;
+		this.totalCost = 0;
 	}
 }
