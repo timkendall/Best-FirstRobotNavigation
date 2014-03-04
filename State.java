@@ -1,18 +1,21 @@
 import java.lang.Math;
+import java.util.LinkedList;
 
 public class State
 {
   // Fields
   private int x;
   private int y;
+  private int goodnessFunction;
   private double goodness;
-  private int function;
+  private LinkedList<State> children;
 
-  // Constructor for initial and goal states
+  // Constructor
   public State (int _x, int _y)
   {
     this.x = _x;
     this.y = _y;
+    this.children = _children;
   }
 
   // Constructor for intermediate states
@@ -37,6 +40,14 @@ public class State
     }
 
 
+  }
+
+  public LinkedList<State> getChildren () {
+    return this.children;
+  }
+
+  public void setChildren (LinkedList<State> _children) {
+    this.children = _children;
   }
 
   public int getX ()
