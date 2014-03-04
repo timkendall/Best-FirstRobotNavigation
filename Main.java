@@ -24,11 +24,10 @@ public class Main
 		Robot buster = new Robot(world);
 
 		// Solve Using 4 Functions
-		buster.solve(1);
+		buster.solveBestFirst(1);
 		System.out.println("Solution (Euclidean Distance): ");
 		buster.printSolution();
-		buster.clean();
-
+/*
 		buster.solve(2);
 		System.out.println("Solution (Manhattan Distance): ");
 		buster.printSolution();
@@ -43,7 +42,7 @@ public class Main
 		System.out.println("Solution (Manhattan Distance + Total Cost): ");
 		buster.printSolution();
 		buster.clean();
-
+*/
 		// Done.
 	}
 

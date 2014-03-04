@@ -13,7 +13,6 @@ public class Robot
 	private LinkedList<State> closed;
 	private PriorityQueue<State> frontier;
 	private LinkedList<State> path;
-	private int totalCost;
 
 	// Custom constructor
 	public Robot (Map _world) {
@@ -22,7 +21,6 @@ public class Robot
 		this.initial = this.world.getInitial();
 		this.goal = this.world.getGoal();
 		this.current = this.initial;
-		this.totalCost = 0;
 
 		// Setup Closed Queue
 		this.closed = new LinkedList<State>();
@@ -40,20 +38,31 @@ public class Robot
 
 	public void solveBestFirst (int _function) {
 		// Run Best-First search algorithm
-		while (this.closed != this.world.getNodes.size() && this.current != this.goal) {
+		while (this.closed.size() != this.world.getNumNodes() && this.current != this.goal) {
+			this.current.print();
 			// Get current's children
 			LinkedList<State> currentsChildren = this.current.getChildren();
 
 			// Backtrack if stuck
 			if (currentsChildren.size() == 0) {
+				System.out.println("Backtracking 1");
 				this.current = this.path.removeFirst();
 			// Continue
 			} else {
 				// Push onto frontier (priority queue)
-				for (State state : this.currentsChildren) {
+				for (State state : currentsChildren) {
 					// Ignore closed states
 					if(this.closed.contains(state)) continue;
+
+					// Calculate goodness
+					state.calculateGoodness(_function, this.initial, this.goal, this.path.size());
 					this.frontier.add(state);
+				}
+
+				if (this.frontier.size() == 0) {
+					System.out.println("Backtracking 2");
+					this.current = this.path.removeFirst();
+					continue;
 				}
 
 				// Pull of best state
@@ -79,7 +88,7 @@ public class Robot
 			this.world.markVisited(state.getX(), state.getY());
 		}
 
-		System.out.println("Path Cost: " + this.totalCost);
+		System.out.println("Path Cost: " + this.path.size());
 		System.out.println("Nodes in Tree: " + this.closed.size());
 		this.world.print();
 	}

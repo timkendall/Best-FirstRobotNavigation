@@ -15,31 +15,24 @@ public class State
   {
     this.x = _x;
     this.y = _y;
-    this.children = _children;
   }
 
   // Constructor for intermediate states
-  public State (int _x, int _y, State _initial, State _goal, int _totalCost, int _function)
+  public void calculateGoodness(int _function, State _initial, State _goal, int _totalCost)
   {
-    this.x = _x;
-    this.y = _y;
-    this.function = _function;
-
     switch (_function)
     {
       case 1: this.goodness = this.euclideanDistance(_goal);
               break;
       case 2: this.goodness = this.manhattanDistance(_goal);
               break;
-      case 3: this.goodness = this.euclideanDistance(_goal) + _totalCost;
+      case 3: this.goodness = this.euclideanDistance(_goal) + _totalCost + 1;
               break;
-      case 4: this.goodness = this.manhattanDistance(_goal) + _totalCost;
+      case 4: this.goodness = this.manhattanDistance(_goal) + _totalCost + 1;
               break;
       default: System.out.println("Invalid evaluation function choice.");
                System.exit(0);
     }
-
-
   }
 
   public LinkedList<State> getChildren () {
@@ -68,11 +61,6 @@ public class State
   public void setGoodness (double _goodness)
   {
     this.goodness = _goodness;
-  }
-
-  public int getFunction ()
-  {
-    return this.function;
   }
 
   public boolean equals (State _other)
@@ -108,5 +96,9 @@ public class State
     int y = Math.abs(this.x - _initial.getY());
 
     return (x+y);
+  }
+
+  public void print () {
+    System.out.println("Node - x: " + this.x + ", y: " + this.y);
   }
 }

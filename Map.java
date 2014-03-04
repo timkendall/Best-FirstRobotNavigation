@@ -13,14 +13,14 @@ public class Map {
 	private int dimension;
 	private State initial;
 	private State goal;
+	private int numNodes;
 	private char[][] visual;
-	private LinkedList<State> nodes;
+	private State[][] nodes;
 
 	// Custom constructor
 	public Map (String _filepath) {
 		this.filepath = _filepath;
-		this.nodes = new LinkedList<State>();
-
+		this.numNodes = 0;
 		// Parse file
 		this.parseMapFile(this.filepath);
 
@@ -82,14 +82,16 @@ public class Map {
 				if (c == 'i') {
 					// Save reference to initial state
 					this.initial = new State(x, y-1);
-					this.nodes.addLast(this.initial)
+					this.nodes[y-1][x] = this.initial;
 				} else if (c == 'g') {
 					// Save reference to goal state
 					this.goal = new State(x, y-1);
-					this.nodes.addLast(this.goal);
+					this.nodes[y-1][x] = this.goal;
 				} else {
-					this.nodes.addLast(new State(x, y-1));
+					this.nodes[y-1][x] = new State(x, y-1);
 				}
+
+				this.numNodes++;
 			}
 		}
 	}
@@ -99,20 +101,23 @@ public class Map {
 		for (int y = 0; y < this.visual.length; ++y) {
 			for (int x = 0; x < this.visual.length; ++x) {
 				// Get state reference
-				State state = this.node[y][x];
+				State state = this.nodes[y][x];
 				LinkedList<State> children = new LinkedList<State>();
 
+				// Continue if state is null (didnt create because its an obstacle)
+				if (state == null) continue;
+
 				if (this.isOnMap(x+1, y) && this.visual[y][x+1] != '+')
-					children.addLast(this.nodes[y][x+1])
+					children.addLast(this.nodes[y][x+1]);
 
 				if (this.isOnMap(x-1, y) && this.visual[y][x-1] != '+')
-					children.addLast(this.nodes[y][x-1])
+					children.addLast(this.nodes[y][x-1]);
 
 				if (this.isOnMap(x, y+1) && this.visual[y+1][x] != '+')
-					children.addLast(this.nodes[y+1][x])
+					children.addLast(this.nodes[y+1][x]);
 
 				if (this.isOnMap(x, y-1) && this.visual[y-1][x] != '+')
-					children.addLast(this.nodes[y-1][x])
+					children.addLast(this.nodes[y-1][x]);
 
 				// Save children to reference
 				state.setChildren(children);
@@ -124,14 +129,10 @@ public class Map {
 		if (_x < 0 || _y < 0)
 			return false;
 
-		if (_x > this.dimension || _y > this.dimension)
+		if (_x >= this.dimension || _y >= this.dimension)
 			return false;
 
 		return true;
-	}
-
-	public LinkedList<State> getNodes () {
-		return this.nodes;
 	}
 
 	public State getInitial () {
@@ -142,10 +143,14 @@ public class Map {
 		return this.goal;
 	}
 
-	public void markVisited (int _x, int _y) {
-		if (this.visual[_y][_x] != 'g' && this.visual[_y][_x] != this.visual[this.startingY][this.startingX])
-			this.visual[_y][_x] = 'o';
+	public int getNumNodes () {
+		return this.numNodes;
 	}
+
+	public void markVisited (int _x, int _y) {
+    if (this.visual[_y][_x] != 'g' && this.visual[_y][_x] != 'i')
+      this.visual[_y][_x] = 'o';
+  }
 
 	public void print ()
 	{
