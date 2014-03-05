@@ -152,12 +152,18 @@ public class Map {
       this.visual[_y][_x] = 'o';
   }
 
-	public void print ()
-	{
-		for (int y = 0; y < this.visual.length; ++y)
-		{
-			for (int x = 0; x < this.visual.length; ++x)
-			{
+	public void clean () {
+		for (int y = 0; y < this.visual.length; ++y) {
+			for (int x = 0; x < this.visual.length; ++x) {
+				if (this.visual[y][x] == 'o')
+					this.visual[y][x] = '.';
+			}
+		}
+	}
+
+	public void print () {
+		for (int y = 0; y < this.visual.length; ++y) {
+			for (int x = 0; x < this.visual.length; ++x) {
 				System.out.print(this.visual[y][x]);
 			}
 
@@ -166,5 +172,4 @@ public class Map {
 
 		System.out.println("");
 	}
-
 }

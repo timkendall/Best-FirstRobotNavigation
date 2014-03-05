@@ -28,7 +28,6 @@ public class Robot
 
 		// Setup Path Stack
 		this.path = new LinkedList<State>();
-		this.path.addFirst(this.current);
 
 		// Setup Frontier (Priority) Queue
 		int initialCapacity = 4;
@@ -39,47 +38,45 @@ public class Robot
 	public void solveBestFirst (int _function) {
 		// Run Best-First search algorithm
 		while (this.closed.size() != this.world.getNumNodes() && this.current != this.goal) {
-			this.current.print();
 			// Get current's children
 			LinkedList<State> currentsChildren = this.current.getChildren();
 
-			// Backtrack if stuck
-			if (currentsChildren.size() == 0) {
-				System.out.println("Backtracking 1");
-				this.current = this.path.removeFirst();
-			// Continue
-			} else {
-				// Push onto frontier (priority queue)
-				for (State state : currentsChildren) {
-					// Ignore closed states
-					if(this.closed.contains(state)) continue;
+			// Push onto frontier (priority queue)
+			for (State state : currentsChildren) {
+				// Ignore closed states
+				if(this.closed.contains(state)) continue;
 
-					// Calculate goodness
-					state.calculateGoodness(_function, this.initial, this.goal, this.path.size());
-					this.frontier.add(state);
-				}
-
-				if (this.frontier.size() == 0) {
-					System.out.println("Backtracking 2");
-					this.current = this.path.removeFirst();
-					continue;
-				}
-
-				// Pull of best state
-				this.current = this.frontier.poll();
-
-				// Add to Closed
-				this.closed.addLast(this.current);
-
-				// Push onto our path stack
-				this.path.addFirst(this.current);
-				this.frontier.clear();
+				// Calculate goodness
+				state.calculateGoodness(_function, this.goal, this.path.size());
+				this.frontier.add(state);
 			}
+
+			// Push the current state
+			if (this.frontier.size() > 0 && !this.path.contains(this.current))
+				this.path.push(this.current);
+
+			// Backtrack if stuck
+			if (this.frontier.size() == 0) {
+				this.current = this.path.pop();
+				continue;
+			}
+
+			// Pull of best state
+			this.current = this.frontier.poll();
+
+			// Add to Closed
+			this.closed.addLast(this.current);
+
+			// Push onto our path stack
+			this.path.push(this.current);
+			this.frontier.clear();
 		}
 
 		// Handle failure
-		if (this.current != this.goal)
+		if (this.current != this.goal) {
 			System.out.println("Failed to find solution path.");
+			System.exit(0);
+		}
 	}
 
 	public void printSolution () {
@@ -91,5 +88,13 @@ public class Robot
 		System.out.println("Path Cost: " + this.path.size());
 		System.out.println("Nodes in Tree: " + this.closed.size());
 		this.world.print();
+	}
+
+	public void clean () {
+		this.world.clean();
+		this.closed.clear();
+		this.frontier.clear();
+		this.path.clear();
+		this.current = this.initial;
 	}
 }

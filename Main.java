@@ -2,15 +2,11 @@ import java.util.Scanner;
 import java.nio.charset.Charset;
 import java.io.IOException;
 
-public class Main
-{
+public class Main {
 	// Main method
-	public static void main (String[] args)
-	{
-
+	public static void main (String[] args) {
 		// Quick Naive Check For Filepath
-		if (args.length == 0)
-		{
+		if (args.length == 0) {
 			System.out.println("Please provide a map file.");
 			System.exit(0);
 		}
@@ -20,30 +16,33 @@ public class Main
 		System.out.println("Initial map: ");
 		world.print();
 
-		// Power Up Robot
-		Robot buster = new Robot(world);
+		// Power Up Robots
+		Robot buster1 = new Robot(world);
+		Robot buster2 = new Robot(world);
+		Robot buster3 = new Robot(world);
+		Robot buster4 = new Robot(world);
 
 		// Solve Using 4 Functions
-		buster.solveBestFirst(1);
+		buster1.solveBestFirst(1);
 		System.out.println("Solution (Euclidean Distance): ");
-		buster.printSolution();
-/*
-		buster.solve(2);
+		buster1.printSolution();
+		buster1.clean();
+
+		buster2.solveBestFirst(2);
 		System.out.println("Solution (Manhattan Distance): ");
-		buster.printSolution();
-		buster.clean();
+		buster2.printSolution();
+		buster2.clean();
 
-		buster.solve(3);
+		buster3.solveBestFirst(3);
 		System.out.println("Solution (Euclidean Distance + Total Cost): ");
-		buster.printSolution();
-		buster.clean();
+		buster3.printSolution();
+		buster3.clean();
 
-		buster.solve(4);
+		buster4.solveBestFirst(4);
 		System.out.println("Solution (Manhattan Distance + Total Cost): ");
-		buster.printSolution();
-		buster.clean();
-*/
+		buster4.printSolution();
+		buster4.clean();
+
 		// Done.
 	}
-
 }
